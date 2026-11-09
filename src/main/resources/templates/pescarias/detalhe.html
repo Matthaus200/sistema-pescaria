@@ -60,7 +60,7 @@
                     </div>
                     <div class="actions">
                         <form th:action="@{/pescarias/{pid}/capturas/{cid}/excluir(pid=${pescaria.id},cid=${c.id})}"
-                              method="post" onsubmit="return confirm('Remover esta captura?');">
+                              method="post" data-confirm="Remover esta captura?">
                             <button type="submit" class="btn danger sm">Remover</button>
                         </form>
                     </div>

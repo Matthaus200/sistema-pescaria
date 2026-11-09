@@ -62,7 +62,7 @@
                     <a class="btn ghost sm" th:href="@{/pescarias/{id}(id=${p.id})}">Capturas</a>
                     <a class="btn ghost sm" th:href="@{/pescarias/{id}/editar(id=${p.id})}">Editar</a>
                     <form th:action="@{/pescarias/{id}/excluir(id=${p.id})}" method="post"
-                          onsubmit="return confirm('Excluir esta pescaria e todas as capturas dela?');">
+                          data-confirm="Excluir esta pescaria e todas as capturas dela?">
                         <button type="submit" class="btn danger sm">Excluir</button>
                     </form>
                 </div>

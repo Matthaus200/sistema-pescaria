@@ -27,7 +27,7 @@
                     <div class="actions">
                         <a class="btn ghost sm" th:href="@{/locais/{id}/editar(id=${l.id})}">Editar</a>
                         <form th:action="@{/locais/{id}/excluir(id=${l.id})}" method="post"
-                              onsubmit="return confirm('Excluir este local de pesca?');">
+                              data-confirm="Excluir este local de pesca?">
                             <button type="submit" class="btn danger sm">Excluir</button>
                         </form>
                     </div>

@@ -1,10 +1,9 @@
 package br.univille.pescaria.controller;
 
 import br.univille.pescaria.model.Especie;
-import br.univille.pescaria.repository.CapturaRepository;
-import br.univille.pescaria.repository.EspecieRepository;
+import br.univille.pescaria.service.EspecieService;
+import br.univille.pescaria.service.ExclusaoNaoPermitidaException;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,19 +12,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/especies")
 public class EspecieController {
 
-    private final EspecieRepository especieRepository;
-    private final CapturaRepository capturaRepository;
+    private final EspecieService especieService;
 
-    public EspecieController(EspecieRepository especieRepository, CapturaRepository capturaRepository) {
-        this.especieRepository = especieRepository;
-        this.capturaRepository = capturaRepository;
+    public EspecieController(EspecieService especieService) {
+        this.especieService = especieService;
     }
 
     @ModelAttribute("menuAtivo")
@@ -35,7 +31,7 @@ public class EspecieController {
 
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("especies", especieRepository.findAllByOrderByNomePopularAsc());
+        model.addAttribute("especies", especieService.listarTodas());
         return "especies/lista";
     }
 
@@ -47,7 +43,7 @@ public class EspecieController {
 
     @GetMapping("/{id}/editar")
     public String editar(@PathVariable Long id, Model model) {
-        model.addAttribute("especie", buscar(id));
+        model.addAttribute("especie", especieService.buscarPorId(id));
         return "especies/form";
     }
 
@@ -58,27 +54,19 @@ public class EspecieController {
         if (result.hasErrors()) {
             return "especies/form";
         }
-        especieRepository.save(especie);
+        especieService.salvar(especie);
         redirect.addFlashAttribute("sucesso", "Espécie salva.");
         return "redirect:/especies";
     }
 
     @PostMapping("/{id}/excluir")
     public String excluir(@PathVariable Long id, RedirectAttributes redirect) {
-        Especie especie = buscar(id);
-        long capturas = capturaRepository.countByEspecie_Id(id);
-        if (capturas > 0) {
-            redirect.addFlashAttribute("erro", "Não foi possível excluir " + especie.getNomePopular()
-                    + ": ela aparece em " + capturas + " captura(s). Remova as capturas antes.");
-        } else {
-            especieRepository.delete(especie);
+        try {
+            especieService.excluir(id);
             redirect.addFlashAttribute("sucesso", "Espécie excluída.");
+        } catch (ExclusaoNaoPermitidaException e) {
+            redirect.addFlashAttribute("erro", e.getMessage());
         }
         return "redirect:/especies";
-    }
-
-    private Especie buscar(Long id) {
-        return especieRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Espécie não encontrada"));
     }
 }

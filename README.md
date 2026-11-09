@@ -203,12 +203,39 @@ src/main/java/br/univille/pescaria
 ├── PescariaApplication.java   # classe principal
 ├── model/                     # entidades JPA (as 6 tabelas + enum TipoLocal)
 ├── repository/                # interfaces Spring Data
+├── service/                   # regras de negócio (um service por entidade)
 ├── controller/                # controllers do Spring MVC (um por CRUD)
 └── config/                    # dados de exemplo e formatação de números
 src/main/resources
-├── application.properties     # configuração (sem senhas)
-├── templates/                 # páginas Thymeleaf
-└── static/css/style.css       # estilos
+├── application.properties     # configuração
+├── templates/                 # páginas Thymeleaf (HTML)
+└── static/
+    ├── css/style.css          # estilos
+    └── js/app.js              # confirmação de exclusão e mensagens
+```
+
+### Arquitetura MVC
+
+| Camada | O que contém | Onde |
+|---|---|---|
+| **Model** | Entidades JPA, repositórios Spring Data e services com as regras de negócio | `model/`, `repository/`, `service/` |
+| **Control** | Controllers que recebem as requisições, validam os formulários e chamam os services | `controller/` |
+| **View** | Páginas HTML com Thymeleaf, CSS e JavaScript | `templates/`, `static/css/`, `static/js/` |
+
+Os controllers **não acessam os repositórios**: toda leitura e gravação passa pelos services. Exemplos de regras que ficam nos services:
+
+- Não é possível excluir pescador, local ou embarcação que tenha pescarias, nem espécie que apareça em capturas (`ExclusaoNaoPermitidaException`).
+- Ao editar uma pescaria, os dados são copiados para o registro existente, preservando as capturas.
+- Ao excluir uma pescaria, as capturas dela são excluídas junto.
+- Registro não encontrado gera `RegistroNaoEncontradoException`, que o Spring transforma em página 404.
+
+```mermaid
+flowchart LR
+    V["View<br/>Thymeleaf + CSS + JS"] -->|requisição| C["Controller"]
+    C -->|chama| S["Service"]
+    S -->|usa| R["Repository<br/>Spring Data JPA"]
+    R -->|SQL| DB[("PostgreSQL<br/>Neon")]
+    C -->|Model + nome da view| V
 ```
 
 ---
