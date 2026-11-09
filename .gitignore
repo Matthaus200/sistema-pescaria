@@ -1,5 +1,4 @@
-# Dados de acesso ao banco (nunca enviar ao GitHub)
-db.properties
+# Variáveis de ambiente locais
 .env
 
 # Build

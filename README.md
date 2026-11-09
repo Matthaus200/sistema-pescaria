@@ -214,27 +214,15 @@ src/main/resources
 
 ## 6. Como rodar
 
-### 6.1 Criar o banco no Neon (uma vez, por um integrante)
+### 6.1 Banco de dados
 
-1. Crie uma conta gratuita em https://neon.com e um projeto (região mais próxima: São Paulo, se disponível).
-2. No painel do projeto, clique em **Connect** e escolha **Java** para ver a URL no formato JDBC.
-3. Compartilhe os dados de acesso com o grupo por mensagem privada, **nunca pelo GitHub**.
+O banco já está criado no [Neon](https://neon.com) (PostgreSQL, região São Paulo), e o acesso está no arquivo `db.properties`, na raiz do projeto. **Não é preciso configurar nada**: basta clonar e executar.
 
-> O plano gratuito do Neon desliga o banco depois de 5 minutos sem uso e liga de novo na conexão seguinte. A primeira página carregada depois de um tempo parado pode demorar um pouco mais.
+> O plano gratuito do Neon desliga o banco depois de 5 minutos sem uso e liga de novo na conexão seguinte. A primeira página carregada depois de um tempo parado pode demorar alguns segundos a mais.
 
-### 6.2 Configurar o acesso no seu computador
+> Os dados de acesso estão no repositório de propósito, para facilitar a avaliação. O banco é usado só para este trabalho acadêmico.
 
-Na raiz do projeto, copie `db.properties.example` para `db.properties` e preencha:
-
-```properties
-DB_URL=jdbc:postgresql://SEU-HOST.neon.tech/neondb?sslmode=require
-DB_USERNAME=neondb_owner
-DB_PASSWORD=sua-senha-aqui
-```
-
-O arquivo `db.properties` está no `.gitignore` e não vai para o GitHub. Em vez dele, também dá para usar variáveis de ambiente com os mesmos nomes.
-
-### 6.3 Executar
+### 6.2 Executar
 
 - **IntelliJ IDEA:** abra a pasta do projeto, espere o Maven baixar as dependências e rode a classe `PescariaApplication`.
 - **VS Code:** instale o *Extension Pack for Java* e o *Spring Boot Extension Pack*, abra a pasta e rode `PescariaApplication`.
