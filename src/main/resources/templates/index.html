@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Início')}"></head>
+<body>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <main class="stack">
+        <section class="hero">
+            <div class="hero-text">
+                <span class="eyebrow">Diário de pesca</span>
+                <h1>Boa pesca!</h1>
+                <p>Registre suas saídas e acompanhe o que foi fisgado em cada uma.</p>
+                <a class="btn coral" th:href="@{/pescarias/novo}">Registrar pescaria</a>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <span>Pescarias registradas</span>
+                    <b th:text="${totalPescarias}">0</b>
+                </div>
+                <div class="stat">
+                    <span>Peso capturado</span>
+                    <b th:text="${#numbers.formatDecimal(pesoTotalKg, 1, 'POINT', 1, 'COMMA')} + ' kg'">0 kg</b>
+                </div>
+                <div class="stat">
+                    <span>Espécies capturadas</span>
+                    <b th:text="${especiesCapturadas}">0</b>
+                </div>
+            </div>
+        </section>
+
+        <section class="stack-sm">
+            <div class="section-head">
+                <h2>Últimas pescarias</h2>
+                <a class="link" th:href="@{/pescarias}">Ver todas →</a>
+            </div>
+
+            <div class="empty" th:if="${#lists.isEmpty(ultimasPescarias)}">
+                <strong>Nenhuma pescaria ainda</strong>
+                Registre a primeira saída pelo botão acima.
+            </div>
+
+            <div class="grid" th:unless="${#lists.isEmpty(ultimasPescarias)}">
+                <a class="mini" th:each="p : ${ultimasPescarias}" th:href="@{/pescarias/{id}(id=${p.id})}">
+                    <div>
+                        <span class="chip teal upper"
+                              th:text="${#temporals.format(p.dataHora, 'dd')} + ' ' + ${#strings.replace(#temporals.format(p.dataHora, 'MMM'), '.', '')}">18 OUT</span>
+                    </div>
+                    <h3 th:text="${p.localPesca.nome}">Rio Cubatão Norte</h3>
+                    <p class="sub" th:text="${p.pescador.nome}">Pescador</p>
+                    <div class="chips">
+                        <span class="chip" th:if="${p.clima}" th:text="${p.clima}">Nublado</span>
+                        <span class="chip coral"
+                              th:text="${p.totalPeixes} + (${p.totalPeixes} == 1 ? ' peixe' : ' peixes')">5 peixes</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

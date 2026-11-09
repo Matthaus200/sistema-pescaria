@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Trechos reaproveitados por todas as páginas:
+  - head(titulo): <head> com fontes e CSS
+  - topbar: barra de navegação (usa a variável "menuAtivo" do controller)
+  - flash: mensagens de sucesso/erro depois de salvar ou excluir
+-->
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' · Pescaria'">Pescaria</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="topbar" th:fragment="topbar">
+    <a class="brand" th:href="@{/}">
+        <span class="brand-mark" aria-hidden="true">
+            <svg width="22" height="8" viewBox="0 0 320 24" fill="none">
+                <path d="M0 12 C 27 0, 53 0, 80 12 S 133 24, 160 12 S 213 0, 240 12 S 293 24, 320 12"
+                      stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+            </svg>
+        </span>
+        Pescaria
+    </a>
+    <nav class="nav" aria-label="Principal">
+        <ul>
+            <li><a th:href="@{/}" th:attr="aria-current=${menuAtivo == 'inicio'} ? 'page' : null">Início</a></li>
+            <li><a th:href="@{/pescadores}" th:attr="aria-current=${menuAtivo == 'pescadores'} ? 'page' : null">Pescadores</a></li>
+            <li><a th:href="@{/locais}" th:attr="aria-current=${menuAtivo == 'locais'} ? 'page' : null">Locais</a></li>
+            <li><a th:href="@{/embarcacoes}" th:attr="aria-current=${menuAtivo == 'embarcacoes'} ? 'page' : null">Embarcações</a></li>
+            <li><a th:href="@{/especies}" th:attr="aria-current=${menuAtivo == 'especies'} ? 'page' : null">Espécies</a></li>
+            <li><a th:href="@{/pescarias}" th:attr="aria-current=${menuAtivo == 'pescarias'} ? 'page' : null">Pescarias</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div th:fragment="flash" class="flash-area">
+    <p class="flash" th:if="${sucesso}" th:text="${sucesso}" role="status"></p>
+    <p class="flash erro" th:if="${erro}" th:text="${erro}" role="alert"></p>
+</div>
+
+</body>
+</html>

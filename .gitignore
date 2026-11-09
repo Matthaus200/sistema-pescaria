@@ -1,0 +1,20 @@
+# Dados de acesso ao banco (nunca enviar ao GitHub)
+db.properties
+.env
+
+# Build
+target/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+bin/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db

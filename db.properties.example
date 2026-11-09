@@ -1,0 +1,9 @@
+# Copie este arquivo para "db.properties" (na mesma pasta) e preencha com os
+# dados do seu projeto no Neon. O db.properties está no .gitignore e nunca
+# deve ser enviado ao GitHub.
+#
+# No painel do Neon: Connect > escolha "Java" para ver a URL no formato JDBC.
+
+DB_URL=jdbc:postgresql://SEU-HOST.neon.tech/neondb?sslmode=require
+DB_USERNAME=neondb_owner
+DB_PASSWORD=sua-senha-aqui
