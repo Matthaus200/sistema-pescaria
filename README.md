@@ -203,7 +203,8 @@ src/main/java/br/univille/pescaria
 ├── PescariaApplication.java   # classe principal
 ├── model/                     # entidades JPA (as 6 tabelas + enum TipoLocal)
 ├── repository/                # interfaces Spring Data
-└── controller/                # controllers do Spring MVC
+├── controller/                # controllers do Spring MVC (um por CRUD)
+└── config/                    # dados de exemplo e formatação de números
 src/main/resources
 ├── application.properties     # configuração (sem senhas)
 ├── templates/                 # páginas Thymeleaf
@@ -221,6 +222,10 @@ O banco já está criado no [Neon](https://neon.com) (PostgreSQL, região São P
 > O plano gratuito do Neon desliga o banco depois de 5 minutos sem uso e liga de novo na conexão seguinte. A primeira página carregada depois de um tempo parado pode demorar alguns segundos a mais.
 
 > Os dados de acesso estão no repositório de propósito, para facilitar a avaliação. O banco é usado só para este trabalho acadêmico.
+
+> Algumas redes (empresas, faculdades) bloqueiam a porta 5432 do PostgreSQL. Se o console mostrar `Connect timed out`, teste com `Test-NetConnection <host-do-neon> -Port 5432` no PowerShell e, se for bloqueio, use outra rede (por exemplo, o roteador do celular).
+
+Na primeira execução com o banco vazio, o sistema cadastra **dados de exemplo** (pescadores, locais, embarcações, espécies e algumas pescarias com capturas). Para desligar, use `pescaria.dados-exemplo=false` no `application.properties`.
 
 ### 6.2 Executar
 
