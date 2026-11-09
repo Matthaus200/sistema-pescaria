@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Erro')}"></head>
+<body>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+    <main class="stack">
+        <div class="empty">
+            <strong th:text="'Algo deu errado (erro ' + ${status} + ')'">Algo deu errado</strong>
+            Tente de novo. Se o erro continuar, confira o console da aplicação para ver o detalhe.
+            <p style="margin-top: 12px"><a class="link" th:href="@{/}">Voltar ao início</a></p>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Pescarias')}"></head>
+<body>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <main class="stack">
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">Diário de pesca</span>
+                <h1>Pescarias</h1>
+            </div>
+            <a class="btn coral" th:href="@{/pescarias/novo}">+ Nova pescaria</a>
+        </div>
+
+        <form class="filters" th:action="@{/pescarias}" method="get">
+            <div class="field">
+                <label for="filtro-pescador">Pescador</label>
+                <select id="filtro-pescador" name="pescador">
+                    <option value="">Todos</option>
+                    <option th:each="x : ${pescadores}" th:value="${x.id}" th:text="${x.nome}"
+                            th:selected="${filtroPescador != null and filtroPescador == x.id}">Nome</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="filtro-local">Local</label>
+                <select id="filtro-local" name="local">
+                    <option value="">Todos</option>
+                    <option th:each="x : ${locais}" th:value="${x.id}" th:text="${x.nome}"
+                            th:selected="${filtroLocal != null and filtroLocal == x.id}">Local</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn coral sm">Filtrar</button>
+                <a class="btn ghost sm" th:if="${filtrando}" th:href="@{/pescarias}">Limpar</a>
+            </div>
+        </form>
+
+        <div class="empty" th:if="${#lists.isEmpty(pescarias)}">
+            <strong th:text="${filtrando} ? 'Nenhuma pescaria encontrada' : 'Nenhuma pescaria registrada'">Nenhuma pescaria</strong>
+            <span th:text="${filtrando} ? 'Tente outro pescador ou local.' : 'Use “+ Nova pescaria” para registrar a primeira.'">Dica</span>
+        </div>
+
+        <div class="rows" th:unless="${#lists.isEmpty(pescarias)}">
+            <div class="row" th:each="p : ${pescarias}">
+                <div class="datebox">
+                    <b th:text="${#temporals.format(p.dataHora, 'dd')}">18</b>
+                    <span th:text="${#strings.replace(#temporals.format(p.dataHora, 'MMM'), '.', '')}">out</span>
+                </div>
+                <a class="grow" th:href="@{/pescarias/{id}(id=${p.id})}">
+                    <h3 th:text="${p.localPesca.nome}">Local</h3>
+                    <p class="sub"
+                       th:text="${p.pescador.nome} + ' · ' + ${p.embarcacao != null ? p.embarcacao.nome : 'Sem embarcação'}">Pescador · Embarcação</p>
+                </a>
+                <div class="chips">
+                    <span class="chip" th:if="${p.clima != null}" th:text="${p.clima}">Clima</span>
+                    <span class="chip coral" th:text="${p.totalPeixes} + (${p.totalPeixes} == 1 ? ' peixe' : ' peixes')">0 peixes</span>
+                </div>
+                <div class="actions">
+                    <a class="btn ghost sm" th:href="@{/pescarias/{id}(id=${p.id})}">Capturas</a>
+                    <a class="btn ghost sm" th:href="@{/pescarias/{id}/editar(id=${p.id})}">Editar</a>
+                    <form th:action="@{/pescarias/{id}/excluir(id=${p.id})}" method="post"
+                          onsubmit="return confirm('Excluir esta pescaria e todas as capturas dela?');">
+                        <button type="submit" class="btn danger sm">Excluir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -9,6 +9,13 @@ public interface PescariaRepository extends JpaRepository<Pescaria, Long> {
 
     List<Pescaria> findAllByOrderByDataHoraDesc();
 
+    // Filtros da listagem de pescarias.
+    List<Pescaria> findByPescador_IdOrderByDataHoraDesc(Long pescadorId);
+
+    List<Pescaria> findByLocalPesca_IdOrderByDataHoraDesc(Long localPescaId);
+
+    List<Pescaria> findByPescador_IdAndLocalPesca_IdOrderByDataHoraDesc(Long pescadorId, Long localPescaId);
+
     /** As pescarias mais recentes, para a página inicial. */
     List<Pescaria> findTop4ByOrderByDataHoraDesc();
 

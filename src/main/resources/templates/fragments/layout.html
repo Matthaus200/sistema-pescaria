@@ -42,8 +42,19 @@
 
 <div th:fragment="flash" class="flash-area">
     <p class="flash" th:if="${sucesso}" th:text="${sucesso}" role="status"></p>
+    <p class="flash aviso" th:if="${aviso}" th:text="${aviso}" role="status"></p>
     <p class="flash erro" th:if="${erro}" th:text="${erro}" role="alert"></p>
 </div>
+
+<!-- Ondas decorativas do painel lateral dos formulários -->
+<svg th:fragment="waves" class="waves" viewBox="0 0 320 70" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 12 C 27 0, 53 0, 80 12 S 133 24, 160 12 S 213 0, 240 12 S 293 24, 320 12"
+          stroke="#fff" stroke-opacity="0.4" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M0 34 C 27 22, 53 22, 80 34 S 133 46, 160 34 S 213 22, 240 34 S 293 46, 320 34"
+          stroke="#fff" stroke-opacity="0.25" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M0 56 C 27 44, 53 44, 80 56 S 133 68, 160 56 S 213 44, 240 56 S 293 68, 320 56"
+          stroke="#fff" stroke-opacity="0.12" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>
 
 </body>
 </html>

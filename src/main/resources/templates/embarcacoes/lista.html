@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Embarcações')}"></head>
+<body>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <main class="stack">
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">Cadastro</span>
+                <h1>Embarcações</h1>
+            </div>
+            <a class="btn coral" th:href="@{/embarcacoes/novo}">+ Nova embarcação</a>
+        </div>
+
+        <div class="grid">
+            <article class="card" th:each="e, st : ${embarcacoes}">
+                <div class="card-top">
+                    <span class="avatar" th:classappend="'c' + ${(st.index + 1) % 4}"
+                          th:text="${#strings.toUpperCase(#strings.substring(e.nome, 0, 1))}">T</span>
+                    <div>
+                        <h3 th:text="${e.nome}">Nome</h3>
+                        <p class="sub" th:text="${e.registro != null ? 'Registro ' + e.registro : 'Sem registro'}">Registro</p>
+                    </div>
+                </div>
+                <div class="chips">
+                    <span class="chip teal" th:text="${e.tipo}">Tipo</span>
+                    <span class="chip" th:text="${e.capacidade} + (${e.capacidade} == 1 ? ' pessoa' : ' pessoas')">4 pessoas</span>
+                </div>
+                <div class="actions">
+                    <a class="btn ghost sm" th:href="@{/embarcacoes/{id}/editar(id=${e.id})}">Editar</a>
+                    <form th:action="@{/embarcacoes/{id}/excluir(id=${e.id})}" method="post"
+                          onsubmit="return confirm('Excluir esta embarcação?');">
+                        <button type="submit" class="btn danger sm">Excluir</button>
+                    </form>
+                </div>
+            </article>
+
+            <a class="new-card" th:href="@{/embarcacoes/novo}">
+                <span class="plus" aria-hidden="true">+</span>
+                Adicionar embarcação
+            </a>
+        </div>
+    </main>
+</div>
+</body>
+</html>

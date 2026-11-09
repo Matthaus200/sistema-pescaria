@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Embarcação')}"></head>
+<body>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+
+    <main class="split">
+        <aside class="side">
+            <span class="eyebrow">Cadastro</span>
+            <h1 th:text="${embarcacao.id == null} ? 'Nova embarcação' : 'Editar embarcação'">Nova embarcação</h1>
+            <p>A embarcação é opcional na pescaria: quem pesca de barranco não precisa de uma.</p>
+            <svg th:replace="~{fragments/layout :: waves}"></svg>
+        </aside>
+
+        <form class="form" th:action="@{/embarcacoes/salvar}" th:object="${embarcacao}" method="post" novalidate>
+            <h2>Preencha os dados</h2>
+            <input type="hidden" th:field="*{id}">
+
+            <div class="fields">
+                <div class="field" th:classappend="${#fields.hasErrors('nome')} ? 'invalid'">
+                    <label for="nome">Nome <i>*</i></label>
+                    <input type="text" th:field="*{nome}" maxlength="80" placeholder="Ex.: Tainha I">
+                    <span class="err" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('tipo')} ? 'invalid'">
+                    <label for="tipo">Tipo <i>*</i></label>
+                    <select th:field="*{tipo}">
+                        <option value="">Selecione</option>
+                        <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}">Caiaque</option>
+                    </select>
+                    <span class="err" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></span>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('capacidade')} ? 'invalid'">
+                    <label for="capacidade">Capacidade (pessoas) <i>*</i></label>
+                    <input type="number" th:field="*{capacidade}" min="1" step="1" placeholder="Ex.: 4">
+                    <span class="err" th:if="${#fields.hasErrors('capacidade')}" th:errors="*{capacidade}"></span>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('registro')} ? 'invalid'">
+                    <label for="registro">Registro</label>
+                    <input type="text" th:field="*{registro}" maxlength="30" placeholder="Ex.: BR-0012">
+                    <span class="err" th:if="${#fields.hasErrors('registro')}" th:errors="*{registro}"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn coral">Salvar</button>
+                <a class="btn ghost" th:href="@{/embarcacoes}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>

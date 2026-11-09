@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Locais de pesca')}"></head>
+<body>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <main class="stack">
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">Cadastro</span>
+                <h1>Locais de pesca</h1>
+            </div>
+            <a class="btn coral" th:href="@{/locais/novo}">+ Novo local</a>
+        </div>
+
+        <div class="grid">
+            <article class="card banded" th:each="l : ${locais}">
+                <div class="band" th:classappend="${l.tipo}">
+                    <span class="chip on-white" th:text="${l.tipo.descricao}">Rio</span>
+                </div>
+                <div class="inner">
+                    <h3 th:text="${l.nome}">Nome</h3>
+                    <p class="place" th:text="${l.cidade} + '/' + ${l.estado}">Cidade/UF</p>
+                    <p class="meta" th:text="${l.descricao != null ? l.descricao : 'Sem descrição'}">Descrição</p>
+                    <div class="actions">
+                        <a class="btn ghost sm" th:href="@{/locais/{id}/editar(id=${l.id})}">Editar</a>
+                        <form th:action="@{/locais/{id}/excluir(id=${l.id})}" method="post"
+                              onsubmit="return confirm('Excluir este local de pesca?');">
+                            <button type="submit" class="btn danger sm">Excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+
+            <a class="new-card" th:href="@{/locais/novo}">
+                <span class="plus" aria-hidden="true">+</span>
+                Adicionar local
+            </a>
+        </div>
+    </main>
+</div>
+</body>
+</html>

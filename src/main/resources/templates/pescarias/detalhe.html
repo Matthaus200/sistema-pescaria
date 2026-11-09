@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Pescaria')}"></head>
+<body>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <main class="stack">
+        <section class="summary">
+            <div class="top">
+                <div>
+                    <span class="eyebrow" th:text="'Pescaria #' + ${#numbers.formatInteger(pescaria.id, 3)}">Pescaria #001</span>
+                    <h1 th:text="${#temporals.format(pescaria.dataHora, 'd')} + ' de ' + ${#temporals.format(pescaria.dataHora, 'MMMM')} + ' de ' + ${#temporals.format(pescaria.dataHora, 'yyyy')}">18 de outubro de 2026</h1>
+                </div>
+                <div class="form-actions">
+                    <a class="btn coral" th:href="@{/pescarias/{id}/editar(id=${pescaria.id})}">Editar</a>
+                    <a class="btn ghost-light" th:href="@{/pescarias}">Voltar</a>
+                </div>
+            </div>
+            <div class="info">
+                <span><small>Pescador</small><th:block th:text="${pescaria.pescador.nome}">Nome</th:block></span>
+                <span><small>Local</small><th:block th:text="${pescaria.localPesca.nome}">Local</th:block></span>
+                <span><small>Embarcação</small><th:block th:text="${pescaria.embarcacao != null ? pescaria.embarcacao.nome : 'Nenhuma'}">Embarcação</th:block></span>
+                <span><small>Início</small><th:block th:text="${#temporals.format(pescaria.dataHora, 'HH:mm')}">06:30</th:block></span>
+                <span><small>Duração</small><th:block th:text="${pescaria.duracaoHoras != null ? @fmt.num(pescaria.duracaoHoras) + ' h' : '—'}">4,5 h</th:block></span>
+                <span><small>Clima</small><th:block th:text="${pescaria.clima != null ? pescaria.clima : '—'}">Clima</th:block></span>
+            </div>
+            <p class="obs" th:if="${pescaria.observacoes != null}" th:text="${pescaria.observacoes}">Observações</p>
+        </section>
+
+        <div class="detail">
+            <div>
+                <div class="section-head">
+                    <h2>Capturas</h2>
+                    <span class="sub nums"
+                          th:text="${pescaria.totalPeixes} + (${pescaria.totalPeixes} == 1 ? ' peixe' : ' peixes') + ' · ' + ${@fmt.num(pescaria.pesoTotalKg)} + ' kg'">0 peixes · 0 kg</span>
+                </div>
+
+                <div class="empty" th:if="${#lists.isEmpty(pescaria.capturas)}">
+                    <strong>Nenhuma captura ainda</strong>
+                    Adicione o que foi pescado no formulário ao lado.
+                </div>
+
+                <div class="row" th:each="c, st : ${pescaria.capturas}">
+                    <span class="avatar" th:classappend="'c' + ${(st.index + 1) % 4}"
+                          th:text="${#strings.toUpperCase(#strings.substring(c.especie.nomePopular, 0, 1))}">T</span>
+                    <div class="grow">
+                        <h3 th:text="${c.especie.nomePopular}">Espécie</h3>
+                        <p class="sub sci" th:text="${c.especie.nomeCientifico}">Nome científico</p>
+                    </div>
+                    <div class="chips nums">
+                        <span class="chip" th:text="${c.quantidade} + ' un.'">1 un.</span>
+                        <span class="chip" th:text="${@fmt.num(c.pesoKg)} + ' kg'">0 kg</span>
+                        <span class="chip" th:text="${@fmt.num(c.comprimentoCm)} + ' cm'">0 cm</span>
+                        <span class="chip teal" th:if="${c.devolvidoAgua}">Devolvido</span>
+                        <span class="chip" th:unless="${c.devolvidoAgua}">Levado</span>
+                        <span class="chip coral" th:if="${c.abaixoDoMinimo}"
+                              th:text="'Abaixo do mínimo (' + ${@fmt.num(c.especie.tamanhoMinimoCm)} + ' cm)'">Abaixo do mínimo</span>
+                    </div>
+                    <div class="actions">
+                        <form th:action="@{/pescarias/{pid}/capturas/{cid}/excluir(pid=${pescaria.id},cid=${c.id})}"
+                              method="post" onsubmit="return confirm('Remover esta captura?');">
+                            <button type="submit" class="btn danger sm">Remover</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <form class="form" th:action="@{/pescarias/{id}/capturas(id=${pescaria.id})}"
+                  th:object="${novaCaptura}" method="post" novalidate>
+                <h2>Adicionar captura</h2>
+
+                <p class="hint" th:if="${#lists.isEmpty(especies)}">
+                    Nenhuma espécie cadastrada. <a th:href="@{/especies/novo}">Cadastre uma espécie</a> primeiro.
+                </p>
+
+                <div class="field" th:classappend="${#fields.hasErrors('especie')} ? 'invalid'">
+                    <label for="especie">Espécie <i>*</i></label>
+                    <select id="especie" name="especie">
+                        <option value="">Selecione</option>
+                        <option th:each="e : ${especies}" th:value="${e.id}" th:text="${e.nomePopular}"
+                                th:selected="${novaCaptura.especie != null and novaCaptura.especie.id == e.id}">Espécie</option>
+                    </select>
+                    <span class="err" th:if="${#fields.hasErrors('especie')}" th:errors="*{especie}"></span>
+                </div>
+                <div class="fields">
+                    <div class="field" th:classappend="${#fields.hasErrors('quantidade')} ? 'invalid'">
+                        <label for="quantidade">Quantidade <i>*</i></label>
+                        <input type="number" th:field="*{quantidade}" min="1" step="1">
+                        <span class="err" th:if="${#fields.hasErrors('quantidade')}" th:errors="*{quantidade}"></span>
+                    </div>
+                    <div class="field" th:classappend="${#fields.hasErrors('pesoKg')} ? 'invalid'">
+                        <label for="pesoKg">Peso (kg) <i>*</i></label>
+                        <input type="number" th:field="*{pesoKg}" min="0" step="0.01" placeholder="0,0">
+                        <span class="err" th:if="${#fields.hasErrors('pesoKg')}" th:errors="*{pesoKg}"></span>
+                    </div>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('comprimentoCm')} ? 'invalid'">
+                    <label for="comprimentoCm">Comprimento (cm) <i>*</i></label>
+                    <input type="number" th:field="*{comprimentoCm}" min="0" step="0.5" placeholder="0">
+                    <span class="err" th:if="${#fields.hasErrors('comprimentoCm')}" th:errors="*{comprimentoCm}"></span>
+                </div>
+                <label class="check">
+                    <input type="checkbox" th:field="*{devolvidoAgua}">
+                    Peixe devolvido à água
+                </label>
+                <button type="submit" class="btn coral">Adicionar captura</button>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

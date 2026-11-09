@@ -43,6 +43,21 @@ public class Pescador {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataCadastro;
 
+    /** Iniciais do nome (até duas letras), usadas no avatar da listagem. Não é salvo no banco. */
+    public String getIniciais() {
+        if (nome == null || nome.isBlank()) {
+            return "?";
+        }
+        StringBuilder iniciais = new StringBuilder();
+        for (String parte : nome.trim().split("\\s+")) {
+            if (iniciais.length() == 2) {
+                break;
+            }
+            iniciais.append(Character.toUpperCase(parte.charAt(0)));
+        }
+        return iniciais.toString();
+    }
+
     public Long getId() {
         return id;
     }

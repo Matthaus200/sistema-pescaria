@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Espécie')}"></head>
+<body>
+<div class="shell">
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+
+    <main class="split">
+        <aside class="side">
+            <span class="eyebrow">Cadastro</span>
+            <h1 th:text="${especie.id == null} ? 'Nova espécie' : 'Editar espécie'">Nova espécie</h1>
+            <p>Informe o tamanho mínimo de captura e o período de defeso, quando houver.</p>
+            <svg th:replace="~{fragments/layout :: waves}"></svg>
+        </aside>
+
+        <form class="form" th:action="@{/especies/salvar}" th:object="${especie}" method="post" novalidate>
+            <h2>Preencha os dados</h2>
+            <input type="hidden" th:field="*{id}">
+
+            <div class="fields">
+                <div class="field" th:classappend="${#fields.hasErrors('nomePopular')} ? 'invalid'">
+                    <label for="nomePopular">Nome popular <i>*</i></label>
+                    <input type="text" th:field="*{nomePopular}" maxlength="80" placeholder="Ex.: Tilápia">
+                    <span class="err" th:if="${#fields.hasErrors('nomePopular')}" th:errors="*{nomePopular}"></span>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('nomeCientifico')} ? 'invalid'">
+                    <label for="nomeCientifico">Nome científico</label>
+                    <input type="text" th:field="*{nomeCientifico}" maxlength="120" placeholder="Ex.: Oreochromis niloticus">
+                    <span class="err" th:if="${#fields.hasErrors('nomeCientifico')}" th:errors="*{nomeCientifico}"></span>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('tamanhoMinimoCm')} ? 'invalid'">
+                    <label for="tamanhoMinimoCm">Tamanho mínimo (cm) <i>*</i></label>
+                    <input type="number" th:field="*{tamanhoMinimoCm}" min="0" step="0.5" placeholder="Ex.: 25">
+                    <span class="err" th:if="${#fields.hasErrors('tamanhoMinimoCm')}" th:errors="*{tamanhoMinimoCm}"></span>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('periodoDefeso')} ? 'invalid'">
+                    <label for="periodoDefeso">Período de defeso</label>
+                    <input type="text" th:field="*{periodoDefeso}" maxlength="60" placeholder="Ex.: Nov. a fev.">
+                    <span class="err" th:if="${#fields.hasErrors('periodoDefeso')}" th:errors="*{periodoDefeso}"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn coral">Salvar</button>
+                <a class="btn ghost" th:href="@{/especies}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>
